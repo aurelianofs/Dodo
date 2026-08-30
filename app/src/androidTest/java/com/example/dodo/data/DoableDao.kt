@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface DoableDao {
-
     @Query("SELECT * FROM doables ORDER BY id DESC")
     fun getAllDoables(): Flow<List<Doable>>
 
