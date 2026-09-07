@@ -1,4 +1,4 @@
-package com.example.dodo
+package com.example.dodo.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,7 +9,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.dodo.data.Doable
-import com.example.dodo.ui.DoableViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

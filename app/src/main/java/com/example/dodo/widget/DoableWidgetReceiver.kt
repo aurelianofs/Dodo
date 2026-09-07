@@ -1,4 +1,8 @@
 package com.example.dodo.widget
 
-class DoableWidgetReceiver {
+import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.GlanceAppWidgetReceiver
+
+class DoableWidgetReceiver : GlanceAppWidgetReceiver() {
+    override val glanceAppWidget: GlanceAppWidget = DoableWidget()
 }
