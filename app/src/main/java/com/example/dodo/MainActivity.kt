@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.dodo.ui.DoableScreen
-import com.example.dodo.ui.DoableViewModel
+import com.example.dodo.ui.navigation.DodoNavDisplay
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,8 +17,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MaterialTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    val viewModel: DoableViewModel = viewModel()
-                    DoableScreen(viewModel = viewModel)
+                    DodoNavDisplay()
                 }
             }
         }
