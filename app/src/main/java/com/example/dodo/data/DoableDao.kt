@@ -12,8 +12,11 @@ interface DoableDao {
     @Query("SELECT * FROM doables ORDER BY id DESC")
     fun getAllDoables(): Flow<List<Doable>>
 
+    @Query("SELECT * FROM doables WHERE id = :id")
+    suspend fun getDoableById(id: Int): Doable?
+
     @Insert
-    suspend fun insertDoable(doable: Doable)
+    suspend fun insertDoable(doable: Doable): Long
 
     @Update
     suspend fun updateDoable(doable: Doable)

@@ -16,7 +16,11 @@ import java.time.LocalDate
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index("doableId"), Index("date")]
+    indices = [
+        Index("doableId"),
+        Index("date"),
+        Index(value = ["doableId", "date"], unique = true)
+    ]
 )
 data class DoableEntry(
     @PrimaryKey(autoGenerate = true)
