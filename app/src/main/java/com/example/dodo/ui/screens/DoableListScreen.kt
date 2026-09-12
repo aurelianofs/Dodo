@@ -21,20 +21,14 @@ import com.example.dodo.ui.DoableViewModel
 fun DoableListScreen(
     viewModel: DoableViewModel,
     onAddClick: () -> Unit,
-    onEditClick: (Int) -> Unit,
-    onCalendarClick: () -> Unit
+    onEditClick: (Int) -> Unit
 ) {
     val doables by viewModel.doables.collectAsState()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Dodo") },
-                actions = {
-                    IconButton(onClick = onCalendarClick) {
-                        Icon(Icons.Default.CalendarMonth, contentDescription = "Calendar")
-                    }
-                }
+                title = { Text("Dodo") }
             )
         },
         floatingActionButton = {

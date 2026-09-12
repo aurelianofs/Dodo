@@ -20,3 +20,5 @@ sealed interface Routes : NavKey {
     @Serializable
     data class DayDetail(val date: String) : Routes
 }
+
+val topLevelRoutes: kotlin.collections.List<Routes> = listOf(Routes.Index, Routes.List, Routes.Calendar)
