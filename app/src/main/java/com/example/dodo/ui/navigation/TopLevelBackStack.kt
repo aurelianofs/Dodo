@@ -1,44 +1,39 @@
 package com.example.dodo.ui.navigation
 
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.navigation3.runtime.NavKey
 
-class TopLevelBackStack<T : NavKey>(startKey: T) {
+// I chose a single back stack architecture for the Tab Switching
+// I also chose a strict hierarchical back button logic over chronological
+class TopLevelBackStack<T : NavKey>(private val fixedStartKey: T) {
 
-    private val topLevelStacks = linkedMapOf(
-        startKey to mutableStateListOf(startKey)
-    )
+    val backStack = mutableStateListOf(fixedStartKey)
 
-    var topLevelKey by mutableStateOf(startKey)
-        private set
-
-    val backStack = mutableStateListOf(startKey)
-
-    private fun sync() {
-        backStack.clear()
-        backStack.addAll(topLevelStacks.values.flatten())
-    }
+    val topLevelKey: T
+        get() = backStack.first()
 
     fun switchTopLevel(key: T) {
-        val stack = topLevelStacks.remove(key) ?: mutableStateListOf(key)
-        topLevelStacks[key] = stack
-        topLevelKey = key
-        sync()
+        backStack.clear()
+        backStack.add(key)
     }
 
     fun add(key: T) {
-        topLevelStacks[topLevelKey]?.add(key)
-        sync()
+        backStack.add(key)
     }
 
-    fun removeLast() {
-        val currentStack = topLevelStacks[topLevelKey] ?: return
-        if (currentStack.size > 1) {
-            currentStack.removeAt(currentStack.lastIndex)
+    fun handleBack(): BackOutcome {
+        return when {
+            backStack.size > 1 -> {
+                backStack.removeAt(backStack.lastIndex)
+                BackOutcome.Handled
+            }
+            topLevelKey != fixedStartKey -> {
+                switchTopLevel(fixedStartKey)
+                BackOutcome.Handled
+            }
+            else -> BackOutcome.ConfirmExit
         }
-        sync()
     }
+
+    enum class BackOutcome { Handled, ConfirmExit }
 }
