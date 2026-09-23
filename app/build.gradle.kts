@@ -6,13 +6,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.dodo"
+    namespace = "dev.aurefs.dodo"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.example.dodo"
+        applicationId = "dev.aurefs.dodo"
         minSdk = 35
         targetSdk = 37
         versionCode = 1
