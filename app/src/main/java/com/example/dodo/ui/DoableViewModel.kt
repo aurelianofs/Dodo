@@ -22,11 +22,22 @@ class DoableViewModel(application: Application) : AndroidViewModel(application) 
         )
 
     fun addDoable(title: String) {
-        if (title.isBlank()) return
+        saveDoable(id = null, title = title, merit = 1, cost = 1)
+    }
+
+    fun saveDoable(id: Int?, title: String, merit: Int, cost: Int) {
+        val trimmed = title.trim()
+        if (trimmed.isBlank()) return
         viewModelScope.launch {
-            dao.insertDoable(Doable(title = title))
+            if (id == null) {
+                dao.insertDoable(Doable(title = trimmed, merit = merit, cost = cost))
+            } else {
+                dao.updateDoable(Doable(id = id, title = trimmed, merit = merit, cost = cost))
+            }
         }
     }
+
+    suspend fun findDoable(id: Int): Doable? = dao.getDoableById(id)
 
     fun deleteDoable(doable: Doable) {
         viewModelScope.launch {

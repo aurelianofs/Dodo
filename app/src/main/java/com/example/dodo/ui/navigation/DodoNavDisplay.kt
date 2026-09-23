@@ -26,6 +26,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.example.dodo.ui.DoableViewModel
+import com.example.dodo.ui.screens.DoableEditScreen
 import com.example.dodo.ui.screens.DoableListScreen
 
 @Composable
@@ -89,7 +90,11 @@ fun DodoNavDisplay() {
                     )
                 }
                 routeEntry<Routes.Edit>(onBack) { key ->
-                    PlaceholderScreen("Edit screen (doableId=${key.doableId})")
+                    DoableEditScreen(
+                        doableId = key.doableId,
+                        viewModel = doableViewModel,
+                        onSaved = onBack
+                    )
                 }
                 routeEntry<Routes.Calendar>(onBack) {
                     PlaceholderScreen("Calendar screen")
