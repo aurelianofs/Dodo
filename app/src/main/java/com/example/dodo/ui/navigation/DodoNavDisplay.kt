@@ -1,6 +1,9 @@
 package com.example.dodo.ui.navigation
 
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -35,6 +38,13 @@ fun DodoNavDisplay() {
     val currentRoute = topLevelBackStack.backStack.last()
     val showBottomBar = currentRoute.hasBottomBar
 
+    val onBack: () -> Unit = {
+        when (topLevelBackStack.handleBack()) {
+            TopLevelBackStack.BackOutcome.Handled -> Unit
+            TopLevelBackStack.BackOutcome.ConfirmExit -> showExitConfirmation = true
+        }
+    }
+
     Scaffold(
         bottomBar = {
             if (showBottomBar) {
@@ -62,33 +72,30 @@ fun DodoNavDisplay() {
         }
     ) { padding ->
         NavDisplay(
-            modifier = Modifier.padding(padding),
+            modifier = Modifier
+                .padding(padding)
+                .consumeWindowInsets(padding),
             backStack = topLevelBackStack.backStack,
-            onBack = {
-                when (topLevelBackStack.handleBack()) {
-                    TopLevelBackStack.BackOutcome.Handled -> Unit
-                    TopLevelBackStack.BackOutcome.ConfirmExit -> showExitConfirmation = true
-                }
-            },
+            onBack = onBack,
             entryProvider = entryProvider {
-                entry<Routes.Index> {
-                    Text("Index")
+                routeEntry<Routes.Index>(onBack) {
+                    PlaceholderScreen("Index")
                 }
-                entry<Routes.List> {
+                routeEntry<Routes.List>(onBack) {
                     DoableListScreen(
                         viewModel = doableViewModel,
                         onAddClick = { topLevelBackStack.add(Routes.Edit()) },
                         onEditClick = { id -> topLevelBackStack.add(Routes.Edit(doableId = id)) }
                     )
                 }
-                entry<Routes.Edit> { key ->
-                    Text("Edit screen (doableId=${key.doableId})")
+                routeEntry<Routes.Edit>(onBack) { key ->
+                    PlaceholderScreen("Edit screen (doableId=${key.doableId})")
                 }
-                entry<Routes.Calendar> {
-                    Text("Calendar screen")
+                routeEntry<Routes.Calendar>(onBack) {
+                    PlaceholderScreen("Calendar screen")
                 }
-                entry<Routes.DayDetail> { key ->
-                    Text("Day detail (date=${key.date})")
+                routeEntry<Routes.DayDetail>(onBack) { key ->
+                    PlaceholderScreen("Day detail (date=${key.date})")
                 }
             }
         )
@@ -110,5 +117,14 @@ fun DodoNavDisplay() {
                 }
             }
         )
+    }
+}
+
+@Composable
+private fun PlaceholderScreen(text: String) {
+    ScreenLayout { padding ->
+        Box(Modifier.fillMaxSize().padding(padding)) {
+            Text(text)
+        }
     }
 }

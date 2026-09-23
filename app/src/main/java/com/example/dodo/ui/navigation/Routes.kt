@@ -3,12 +3,13 @@ package com.example.dodo.ui.navigation
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
-interface Layout {
+interface RouteLayoutConfig {
+    val title: String
     val hasBottomBar: Boolean
     val hasBackButton: Boolean
 }
 
-sealed interface Routes : NavKey, Layout {
+sealed interface Routes : NavKey, RouteLayoutConfig {
 
     // Tab roots
     sealed interface TopLevel : Routes {
@@ -35,19 +36,29 @@ sealed interface Routes : NavKey, Layout {
     }
 
     @Serializable
-    data object Index : TopLevel
+    data object Index : TopLevel {
+        override val title get() = "Today"
+    }
 
     @Serializable
-    data object List : TopLevel
+    data object List : TopLevel {
+        override val title get() = "Doables"
+    }
 
     @Serializable
-    data class Edit(val doableId: Int? = null) : Flow
+    data class Edit(val doableId: Int? = null) : Flow {
+        override val title get() = if (doableId == null) "New Doable" else "Edit Doable"
+    }
 
     @Serializable
-    data object Calendar : TopLevel
+    data object Calendar : TopLevel {
+        override val title get() = "Calendar"
+    }
 
     @Serializable
-    data class DayDetail(val date: String) : Detail
+    data class DayDetail(val date: String) : Detail {
+        override val title get() = date
+    }
 }
 
 val topLevelRoutes: kotlin.collections.List<Routes.TopLevel> = listOf(Routes.Index, Routes.List, Routes.Calendar)

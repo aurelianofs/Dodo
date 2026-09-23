@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -15,8 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.dodo.data.Doable
 import com.example.dodo.ui.DoableViewModel
+import com.example.dodo.ui.navigation.ScreenLayout
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DoableListScreen(
     viewModel: DoableViewModel,
@@ -25,12 +24,7 @@ fun DoableListScreen(
 ) {
     val doables by viewModel.doables.collectAsState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Dodo") }
-            )
-        },
+    ScreenLayout(
         floatingActionButton = {
             FloatingActionButton(onClick = onAddClick) {
                 Icon(Icons.Default.Add, contentDescription = "Add Doable")
