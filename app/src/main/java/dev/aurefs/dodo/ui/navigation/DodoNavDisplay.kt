@@ -28,6 +28,7 @@ import androidx.navigation3.ui.NavDisplay
 import dev.aurefs.dodo.ui.DoableViewModel
 import dev.aurefs.dodo.ui.screens.DoableEditScreen
 import dev.aurefs.dodo.ui.screens.DoableListScreen
+import dev.aurefs.dodo.ui.screens.IndexScreen
 
 @Composable
 fun DodoNavDisplay() {
@@ -80,7 +81,7 @@ fun DodoNavDisplay() {
             onBack = onBack,
             entryProvider = entryProvider {
                 routeEntry<Routes.Index>(onBack) {
-                    PlaceholderScreen("Index")
+                    IndexScreen(viewModel = doableViewModel)
                 }
                 routeEntry<Routes.List>(onBack) {
                     DoableListScreen(
