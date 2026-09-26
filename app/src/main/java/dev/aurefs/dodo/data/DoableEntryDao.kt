@@ -12,7 +12,7 @@ import java.time.LocalDate
 interface DoableEntryDao {
 
     @Transaction
-    @Query("SELECT * FROM doable_entries WHERE date = :date")
+    @Query("SELECT * FROM doable_entries WHERE date = :date ORDER BY doableId DESC")
     fun getEntriesForDate(date: LocalDate): Flow<List<EntryWithDoable>>
 
     @Transaction
@@ -25,9 +25,21 @@ interface DoableEntryDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertEntries(entries: List<DoableEntry>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsertEntry(entry: DoableEntry)
+    @Query("SELECT id FROM doables WHERE archived = 0")
+    suspend fun getActiveDoableIds(): List<Int>
 
     @Query("UPDATE doable_entries SET done = :done WHERE doableId = :doableId AND date = :date")
     suspend fun setDone(doableId: Int, date: LocalDate, done: Boolean)
+
+    @Transaction
+    suspend fun ensureDaysUpTo(today: LocalDate) {
+        val start = getLatestDate()?.plusDays(1) ?: today
+        if (start > today) return
+        val doableIds = getActiveDoableIds()
+        val entries = generateSequence(start) { it.plusDays(1) }
+            .takeWhile { it <= today }
+            .flatMap { date -> doableIds.map { DoableEntry(doableId = it, date = date) } }
+            .toList()
+        insertEntries(entries)
+    }
 }

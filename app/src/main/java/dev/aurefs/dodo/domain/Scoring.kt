@@ -1,8 +1,6 @@
 package dev.aurefs.dodo.domain
 
-import dev.aurefs.dodo.data.Doable
-
-data class DayItem(val doable: Doable, val done: Boolean)
+import dev.aurefs.dodo.data.EntryWithDoable
 
 object Scoring {
 
@@ -16,8 +14,8 @@ object Scoring {
 
     fun costPoints(level: Int): Int = pointsFor(costPointsByLevel, level)
 
-    fun dayScore(items: List<DayItem>): Int = items.sumOf { item ->
-        if (item.done) meritPoints(item.doable.meritLevel) else -costPoints(item.doable.costLevel)
+    fun dayScore(entries: List<EntryWithDoable>): Int = entries.sumOf { item ->
+        if (item.entry.done) meritPoints(item.doable.meritLevel) else -costPoints(item.doable.costLevel)
     }
 
     private fun pointsFor(table: IntArray, level: Int): Int {

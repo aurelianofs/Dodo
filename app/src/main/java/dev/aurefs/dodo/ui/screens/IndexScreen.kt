@@ -18,13 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import dev.aurefs.dodo.data.EntryWithDoable
 import dev.aurefs.dodo.ui.DoableViewModel
-import dev.aurefs.dodo.ui.TodayDoable
 import dev.aurefs.dodo.ui.navigation.ScreenLayout
 
 @Composable
 fun IndexScreen(viewModel: DoableViewModel) {
-    val items by viewModel.todayDoables.collectAsState()
+    val items by viewModel.todayEntries.collectAsState()
 
     ScreenLayout { padding ->
         if (items.isEmpty()) {
@@ -43,7 +43,7 @@ fun IndexScreen(viewModel: DoableViewModel) {
                     .fillMaxSize()
                     .padding(horizontal = 16.dp)
             ) {
-                items(items, key = { it.doable.id }) { item ->
+                items(items, key = { it.entry.id }) { item ->
                     TodayDoableRow(
                         item = item,
                         onDoneChange = { done -> viewModel.setDone(item, done) }
@@ -56,23 +56,23 @@ fun IndexScreen(viewModel: DoableViewModel) {
 
 @Composable
 private fun TodayDoableRow(
-    item: TodayDoable,
+    item: EntryWithDoable,
     onDoneChange: (Boolean) -> Unit
 ) {
     ListItem(
         modifier = Modifier.toggleable(
-            value = item.isDone,
+            value = item.entry.done,
             role = Role.Checkbox,
             onValueChange = onDoneChange
         ),
         leadingContent = {
-            Checkbox(checked = item.isDone, onCheckedChange = null)
+            Checkbox(checked = item.entry.done, onCheckedChange = null)
         },
         headlineContent = {
             Text(
                 text = "${item.doable.title} (merit: ${item.doable.meritLevel}, cost: ${item.doable.costLevel})",
-                textDecoration = if (item.isDone) TextDecoration.LineThrough else null,
-                color = if (item.isDone) {
+                textDecoration = if (item.entry.done) TextDecoration.LineThrough else null,
+                color = if (item.entry.done) {
                     MaterialTheme.colorScheme.onSurfaceVariant
                 } else {
                     MaterialTheme.colorScheme.onSurface

@@ -22,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
@@ -36,6 +37,11 @@ fun DodoNavDisplay() {
     val doableViewModel: DoableViewModel = viewModel()
     val activity = LocalActivity.current
     var showExitConfirmation by remember { mutableStateOf(false) }
+
+    LifecycleResumeEffect(Unit) {
+        doableViewModel.refreshDate()
+        onPauseOrDispose { }
+    }
 
     val currentRoute = topLevelBackStack.backStack.last()
     val showBottomBar = currentRoute.hasBottomBar

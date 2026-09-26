@@ -3,6 +3,7 @@ package dev.aurefs.dodo.data
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
@@ -19,6 +20,15 @@ interface DoableDao {
 
     @Insert
     suspend fun insertDoable(doable: Doable): Long
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertEntry(entry: DoableEntry)
+
+    @Transaction
+    suspend fun insertDoableForDay(doable: Doable, date: LocalDate) {
+        val id = insertDoable(doable).toInt()
+        insertEntry(DoableEntry(doableId = id, date = date))
+    }
 
     @Update
     suspend fun updateDoable(doable: Doable)

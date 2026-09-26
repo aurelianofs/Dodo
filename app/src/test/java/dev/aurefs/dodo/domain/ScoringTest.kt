@@ -1,15 +1,21 @@
 package dev.aurefs.dodo.domain
 
 import dev.aurefs.dodo.data.Doable
+import dev.aurefs.dodo.data.DoableEntry
+import dev.aurefs.dodo.data.EntryWithDoable
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.time.LocalDate
 
 class ScoringTest {
 
     private fun item(merit: Int, cost: Int, done: Boolean) =
-        DayItem(Doable(title = "test", meritLevel = merit, costLevel = cost), done)
+        EntryWithDoable(
+            DoableEntry(doableId = 1, date = LocalDate.of(2026, 9, 26), done = done),
+            Doable(id = 1, title = "test", meritLevel = merit, costLevel = cost)
+        )
 
     @Test
     fun emptyDayScoresZero() {
