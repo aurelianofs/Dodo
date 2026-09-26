@@ -10,11 +10,12 @@ data class Doable(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val title: String,
-    val merit: Int = 1,
-    val cost: Int = 1
+    val meritLevel: Int = 1,
+    val costLevel: Int = 1,
+    val archived: Boolean = false
 ) {
     init {
-        require(merit in 1..5) { "merit must be between 1 and 5 (was $merit)" }
-        require(cost in 1..5) { "cost must be between 1 and 5 (was $cost)" }
+        require(meritLevel in 1..5) { "meritLevel must be between 1 and 5 (was $meritLevel)" }
+        require(costLevel in 1..5) { "costLevel must be between 1 and 5 (was $costLevel)" }
     }
 }

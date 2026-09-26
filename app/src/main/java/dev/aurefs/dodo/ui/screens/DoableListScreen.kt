@@ -57,7 +57,7 @@ private fun DoableListRow(
     ListItem(
         modifier = Modifier.clickable(onClick = onClick),
         headlineContent = { Text(doable.title) },
-        supportingContent = { Text("Merit: ${doable.merit}   Cost: ${doable.cost}") },
+        supportingContent = { Text("Merit: ${doable.meritLevel}   Cost: ${doable.costLevel}") },
         trailingContent = {
             TextButton(onClick = onDelete) { Text("Delete") }
         }

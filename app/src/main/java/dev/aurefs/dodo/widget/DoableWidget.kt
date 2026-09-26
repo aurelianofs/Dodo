@@ -16,7 +16,7 @@ class DoableWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val dao = AppDatabase.getDatabase(context).doableDao()
-        val doables = dao.getAllDoables().first()
+        val doables = dao.getActiveDoables().first()
 
         provideContent {
             Column(modifier = androidx.glance.GlanceModifier.fillMaxSize().padding(12.dp)) {

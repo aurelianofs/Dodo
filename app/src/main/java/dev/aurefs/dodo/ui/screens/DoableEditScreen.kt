@@ -51,8 +51,8 @@ fun DoableEditScreen(
             notFound = true
         } else {
             title = existing.title
-            merit = existing.merit
-            cost = existing.cost
+            merit = existing.meritLevel
+            cost = existing.costLevel
         }
     }
 

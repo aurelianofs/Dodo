@@ -17,7 +17,7 @@ object Scoring {
     fun costPoints(level: Int): Int = pointsFor(costPointsByLevel, level)
 
     fun dayScore(items: List<DayItem>): Int = items.sumOf { item ->
-        if (item.done) meritPoints(item.doable.merit) else -costPoints(item.doable.cost)
+        if (item.done) meritPoints(item.doable.meritLevel) else -costPoints(item.doable.costLevel)
     }
 
     private fun pointsFor(table: IntArray, level: Int): Int {

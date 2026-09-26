@@ -9,7 +9,7 @@ import org.junit.Test
 class ScoringTest {
 
     private fun item(merit: Int, cost: Int, done: Boolean) =
-        DayItem(Doable(title = "test", merit = merit, cost = cost), done)
+        DayItem(Doable(title = "test", meritLevel = merit, costLevel = cost), done)
 
     @Test
     fun emptyDayScoresZero() {

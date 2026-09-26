@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import dev.aurefs.dodo.data.AppDatabase
 import dev.aurefs.dodo.data.Doable
 import dev.aurefs.dodo.data.DoableEntry
-import dev.aurefs.dodo.data.EntryStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -29,14 +28,13 @@ class DoableViewModel(application: Application) : AndroidViewModel(application) 
     private val dao = AppDatabase.getDatabase(application).doableDao()
     private val entryDao = AppDatabase.getDatabase(application).doableEntryDao()
 
-    val doables: StateFlow<List<Doable>> = dao.getAllDoables()
+    val doables: StateFlow<List<Doable>> = dao.getActiveDoables()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
 
-    // Emits the current date, and again right after each midnight
     private val today: Flow<LocalDate> = flow {
         while (true) {
             val now = LocalDateTime.now()
@@ -49,10 +47,10 @@ class DoableViewModel(application: Application) : AndroidViewModel(application) 
     @OptIn(ExperimentalCoroutinesApi::class)
     val todayDoables: StateFlow<List<TodayDoable>> = today
         .flatMapLatest { date ->
-            combine(dao.getAllDoables(), entryDao.getEntriesForDate(date)) { doables, entries ->
+            combine(dao.getActiveDoables(), entryDao.getEntriesForDate(date)) { doables, entries ->
                 val doneIds = entries
-                    .filter { it.status == EntryStatus.DONE }
-                    .mapTo(mutableSetOf()) { it.doableId }
+                    .filter { it.entry.done }
+                    .mapTo(mutableSetOf()) { it.entry.doableId }
                 doables.map { TodayDoable(it, date, isDone = it.id in doneIds) }
             }
         }
@@ -68,24 +66,25 @@ class DoableViewModel(application: Application) : AndroidViewModel(application) 
                 DoableEntry(
                     doableId = item.doable.id,
                     date = item.date,
-                    status = if (done) EntryStatus.DONE else EntryStatus.PENDING
+                    done = done
                 )
             )
         }
     }
 
     fun addDoable(title: String) {
-        saveDoable(id = null, title = title, merit = 1, cost = 1)
+        saveDoable(id = null, title = title, meritLevel = 1, costLevel = 1)
     }
 
-    fun saveDoable(id: Int?, title: String, merit: Int, cost: Int) {
+    fun saveDoable(id: Int?, title: String, meritLevel: Int, costLevel: Int) {
         val trimmed = title.trim()
         if (trimmed.isBlank()) return
         viewModelScope.launch {
             if (id == null) {
-                dao.insertDoable(Doable(title = trimmed, merit = merit, cost = cost))
+                dao.insertDoable(Doable(title = trimmed, meritLevel = meritLevel, costLevel = costLevel))
             } else {
-                dao.updateDoable(Doable(id = id, title = trimmed, merit = merit, cost = cost))
+                val existing = dao.getDoableById(id) ?: return@launch
+                dao.updateDoable(existing.copy(title = trimmed, meritLevel = meritLevel, costLevel = costLevel))
             }
         }
     }
@@ -94,7 +93,7 @@ class DoableViewModel(application: Application) : AndroidViewModel(application) 
 
     fun deleteDoable(doable: Doable) {
         viewModelScope.launch {
-            dao.deleteDoable(doable)
+            dao.removeDoable(doable, LocalDate.now())
         }
     }
 }

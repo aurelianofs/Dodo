@@ -70,7 +70,7 @@ private fun TodayDoableRow(
         },
         headlineContent = {
             Text(
-                text = "${item.doable.title} (merit: ${item.doable.merit}, cost: ${item.doable.cost})",
+                text = "${item.doable.title} (merit: ${item.doable.meritLevel}, cost: ${item.doable.costLevel})",
                 textDecoration = if (item.isDone) TextDecoration.LineThrough else null,
                 color = if (item.isDone) {
                     MaterialTheme.colorScheme.onSurfaceVariant

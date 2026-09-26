@@ -14,14 +14,4 @@ class Converters {
     fun toEpochDay(date: LocalDate?): Long? {
         return date?.toEpochDay()
     }
-
-    @TypeConverter
-    fun fromStatusName(name: String?): EntryStatus? {
-        return name?.let { EntryStatus.valueOf(it) }
-    }
-
-    @TypeConverter
-    fun toStatusName(status: EntryStatus?): String? {
-        return status?.name
-    }
 }
