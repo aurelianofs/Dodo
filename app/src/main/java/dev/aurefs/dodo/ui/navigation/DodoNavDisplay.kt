@@ -1,9 +1,7 @@
 package dev.aurefs.dodo.ui.navigation
 
 import androidx.activity.compose.LocalActivity
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -27,6 +25,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import dev.aurefs.dodo.ui.DoableViewModel
+import dev.aurefs.dodo.ui.screens.CalendarScreen
 import dev.aurefs.dodo.ui.screens.DayDetailScreen
 import dev.aurefs.dodo.ui.screens.DoableEditScreen
 import dev.aurefs.dodo.ui.screens.DoableListScreen
@@ -106,7 +105,16 @@ fun DodoNavDisplay() {
                     )
                 }
                 routeEntry<Routes.Calendar>(onBack) {
-                    PlaceholderScreen("Calendar screen")
+                    CalendarScreen(
+                        viewModel = doableViewModel,
+                        onDayClick = { date ->
+                            if (date == doableViewModel.currentDate.value) {
+                                topLevelBackStack.switchTopLevel(Routes.Index)
+                            } else {
+                                topLevelBackStack.add(Routes.DayDetail(date.toString()))
+                            }
+                        }
+                    )
                 }
                 routeEntry<Routes.DayDetail>(onBack) { key ->
                     DayDetailScreen(date = LocalDate.parse(key.date), viewModel = doableViewModel)
@@ -131,14 +139,5 @@ fun DodoNavDisplay() {
                 }
             }
         )
-    }
-}
-
-@Composable
-private fun PlaceholderScreen(text: String) {
-    ScreenLayout { padding ->
-        Box(Modifier.fillMaxSize().padding(padding)) {
-            Text(text)
-        }
     }
 }

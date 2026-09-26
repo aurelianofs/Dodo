@@ -6,18 +6,22 @@ import androidx.lifecycle.viewModelScope
 import dev.aurefs.dodo.data.AppDatabase
 import dev.aurefs.dodo.data.Doable
 import dev.aurefs.dodo.data.EntryWithDoable
+import dev.aurefs.dodo.domain.Scoring
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.YearMonth
 
 class DoableViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -47,6 +51,8 @@ class DoableViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
+    val currentDate: StateFlow<LocalDate> = today.asStateFlow()
+
     fun refreshDate() {
         today.value = LocalDate.now()
     }
@@ -61,6 +67,9 @@ class DoableViewModel(application: Application) : AndroidViewModel(application) 
         )
 
     fun entriesFor(date: LocalDate): Flow<List<EntryWithDoable>> = entryDao.getEntriesForDate(date)
+
+    fun scoresFor(month: YearMonth): Flow<Map<LocalDate, Int>> =
+        entryDao.getEntriesBetween(month.atDay(1), month.atEndOfMonth()).map(Scoring::dayScores)
 
     fun setDone(item: EntryWithDoable, done: Boolean) {
         viewModelScope.launch {

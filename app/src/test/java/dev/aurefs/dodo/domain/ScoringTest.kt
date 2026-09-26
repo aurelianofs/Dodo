@@ -64,4 +64,29 @@ class ScoringTest {
         assertThrows(IllegalArgumentException::class.java) { Scoring.meritPoints(0) }
         assertThrows(IllegalArgumentException::class.java) { Scoring.costPoints(6) }
     }
+
+    @Test
+    fun dayScoresGroupsEntriesByDate() {
+        val monday = LocalDate.of(2026, 9, 21)
+        val tuesday = monday.plusDays(1)
+        fun on(date: LocalDate, merit: Int, cost: Int, done: Boolean) = EntryWithDoable(
+            DoableEntry(doableId = merit * 10 + cost, date = date, done = done),
+            Doable(id = merit * 10 + cost, title = "test", meritLevel = merit, costLevel = cost)
+        )
+        val entries = listOf(
+            on(monday, merit = 4, cost = 2, done = true),
+            on(monday, merit = 1, cost = 5, done = false),
+            on(tuesday, merit = 1, cost = 5, done = true)
+        )
+
+        val scores = Scoring.dayScores(entries)
+
+        assertEquals(
+            mapOf(
+                monday to Scoring.meritPoints(4) - Scoring.costPoints(5),
+                tuesday to Scoring.meritPoints(1)
+            ),
+            scores
+        )
+    }
 }
