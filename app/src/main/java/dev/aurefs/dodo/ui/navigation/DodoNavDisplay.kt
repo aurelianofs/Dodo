@@ -1,5 +1,6 @@
 package dev.aurefs.dodo.ui.navigation
 
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
@@ -53,6 +54,8 @@ fun DodoNavDisplay() {
             TopLevelBackStack.BackOutcome.ConfirmExit -> showExitConfirmation = true
         }
     }
+
+    BackHandler(enabled = topLevelBackStack.backStack.size == 1, onBack = onBack)
 
     Scaffold(
         bottomBar = {
