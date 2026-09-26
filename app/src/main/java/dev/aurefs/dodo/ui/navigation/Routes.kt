@@ -2,6 +2,9 @@ package dev.aurefs.dodo.ui.navigation
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 interface RouteLayoutConfig {
     val title: String
@@ -57,7 +60,8 @@ sealed interface Routes : NavKey, RouteLayoutConfig {
 
     @Serializable
     data class DayDetail(val date: String) : Detail {
-        override val title get() = date
+        override val title: String
+            get() = LocalDate.parse(date).format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
     }
 }
 

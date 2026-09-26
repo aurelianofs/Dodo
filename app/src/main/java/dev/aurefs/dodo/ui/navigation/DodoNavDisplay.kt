@@ -27,9 +27,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import dev.aurefs.dodo.ui.DoableViewModel
+import dev.aurefs.dodo.ui.screens.DayDetailScreen
 import dev.aurefs.dodo.ui.screens.DoableEditScreen
 import dev.aurefs.dodo.ui.screens.DoableListScreen
 import dev.aurefs.dodo.ui.screens.IndexScreen
+import java.time.LocalDate
 
 @Composable
 fun DodoNavDisplay() {
@@ -107,7 +109,7 @@ fun DodoNavDisplay() {
                     PlaceholderScreen("Calendar screen")
                 }
                 routeEntry<Routes.DayDetail>(onBack) { key ->
-                    PlaceholderScreen("Day detail (date=${key.date})")
+                    DayDetailScreen(date = LocalDate.parse(key.date), viewModel = doableViewModel)
                 }
             }
         )

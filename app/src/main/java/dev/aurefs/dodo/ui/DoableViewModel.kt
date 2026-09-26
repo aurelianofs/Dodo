@@ -8,6 +8,7 @@ import dev.aurefs.dodo.data.Doable
 import dev.aurefs.dodo.data.EntryWithDoable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -58,6 +59,8 @@ class DoableViewModel(application: Application) : AndroidViewModel(application) 
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
+
+    fun entriesFor(date: LocalDate): Flow<List<EntryWithDoable>> = entryDao.getEntriesForDate(date)
 
     fun setDone(item: EntryWithDoable, done: Boolean) {
         viewModelScope.launch {
