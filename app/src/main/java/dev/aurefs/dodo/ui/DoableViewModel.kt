@@ -2,11 +2,13 @@ package dev.aurefs.dodo.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.glance.appwidget.updateAll
 import androidx.lifecycle.viewModelScope
 import dev.aurefs.dodo.data.AppDatabase
 import dev.aurefs.dodo.data.Doable
 import dev.aurefs.dodo.data.EntryWithDoable
 import dev.aurefs.dodo.domain.Scoring
+import dev.aurefs.dodo.widget.DoableWidget
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -41,6 +43,7 @@ class DoableViewModel(application: Application) : AndroidViewModel(application) 
         viewModelScope.launch {
             today.collect { date -> entryDao.ensureDaysUpTo(date) }
         }
+        keepWidgetInSync()
         viewModelScope.launch {
             while (true) {
                 val now = LocalDateTime.now()
@@ -52,6 +55,15 @@ class DoableViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     val currentDate: StateFlow<LocalDate> = today.asStateFlow()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun keepWidgetInSync() {
+        viewModelScope.launch {
+            today
+                .flatMapLatest { date -> entryDao.getEntriesForDate(date) }
+                .collect { DoableWidget().updateAll(getApplication()) }
+        }
+    }
 
     fun refreshDate() {
         today.value = LocalDate.now()
